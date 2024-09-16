@@ -19,4 +19,7 @@ up_migrate:
 down_migrate:
 	migrate -database postgres://root:secret@localhost:5432/simple_bank?sslmode=disable -path db/migrations -verbose down
 
-.PHONY: run_docker start_docker stop_docker create_db drop_db up_migrate down_migrate
+sqlc_generate:
+	sqlc generate
+
+.PHONY: sqlc_generate run_docker start_docker stop_docker create_db drop_db up_migrate down_migrate
