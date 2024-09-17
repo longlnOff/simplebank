@@ -37,7 +37,7 @@ func TestMain(m *testing.M) {
         log.Fatal(err)
     }
 
-    fmt.Println("Successfully connected!")
+    fmt.Println("Successfully connected to Database!")
 
     Query = New(TestDB)
 
