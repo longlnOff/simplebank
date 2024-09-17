@@ -23,6 +23,6 @@ sqlc_generate:
 	sqlc generate
 	
 test:
-	go test -timeout 30s ./... -v
+	go test -timeout 30s -cover ./... -v
 
 .PHONY: test sqlc_generate run_docker start_docker stop_docker create_db drop_db up_migrate down_migrate
