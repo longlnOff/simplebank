@@ -9,11 +9,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-
-
-
-
-
 func createRandomTransfer(t *testing.T, fromAccount Account, toAccount Account) Transfer {
 	arg := CreateTransferParams{
 		FromAccountID: fromAccount.ID,
@@ -21,7 +16,7 @@ func createRandomTransfer(t *testing.T, fromAccount Account, toAccount Account) 
 		Amount: utils.RandomMoney(),
 	}
 
-	transfer, err := Query.CreateTransfer(context.Background(), arg)
+	transfer, err := testQueries.CreateTransfer(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, transfer)
 
@@ -43,7 +38,7 @@ func TestGetTransfer(t *testing.T) {
 	toAccount := createRandomAccount(t)
 	randomTransfer := createRandomTransfer(t, fromAccount, toAccount)	
 
-	transfer, err := Query.GetTransfer(context.Background(), randomTransfer.ID)
+	transfer, err := testQueries.GetTransfer(context.Background(), randomTransfer.ID)
 	require.NoError(t, err)
 	require.NotEmpty(t, transfer)
 
@@ -70,7 +65,7 @@ func TestListTransfers(t *testing.T) {
 		Offset: 5,
 	}
 
-	transfers, err := Query.ListTransfers(context.Background(), arg)
+	transfers, err := testQueries.ListTransfers(context.Background(), arg)
 	require.NoError(t, err)
 	require.Equal(t, 5, len(transfers))
 }

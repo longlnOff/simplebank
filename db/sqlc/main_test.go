@@ -18,28 +18,28 @@ const (
     dbname   = "simple_bank"
 )
 
-var TestDB *sql.DB
-var Query *Queries
+var testDB *sql.DB
+var testQueries *Queries
 
 func TestMain(m *testing.M) {
     psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
         host, port, user, password, dbname)
 
     var err error
-    TestDB, err = sql.Open("postgres", psqlInfo)
+    testDB, err = sql.Open("postgres", psqlInfo)
     if err != nil {
         log.Fatal(err)
     }
-    defer TestDB.Close()
+    defer testDB.Close()
 
-    err = TestDB.Ping()
+    err = testDB.Ping()
     if err != nil {
         log.Fatal(err)
     }
 
     fmt.Println("Successfully connected to Database!")
 
-    Query = New(TestDB)
+    testQueries = New(testDB)
 
 	os.Exit(m.Run())
 }
