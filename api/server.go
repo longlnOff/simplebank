@@ -14,8 +14,8 @@ type Server struct {
 
 // create new server for handling
 func NewServer(store *db.Store) *Server {
-	server := &Server{store: store}
-	router := gin.Default()
+	server := &Server{store: store}		// To interact with DB
+	router := gin.Default()				// To route requests
 
 	// register routes
 

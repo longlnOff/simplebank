@@ -4,9 +4,11 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"github.com/longln/simplebank/api"
+
 	_ "github.com/lib/pq"
+	"github.com/longln/simplebank/api"
 	db "github.com/longln/simplebank/db/sqlc"
+	"github.com/longln/simplebank/utils"
 )
 
 const (
@@ -19,10 +21,13 @@ const (
 )
 
 func main() {
-    psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-        host, port, user, password, dbname)
+    config, err := utils.LoadConfig(".")
+    if err != nil {
+        log.Fatal("cannot load config:", err)
+    }
 
-    conn, err := sql.Open("postgres", psqlInfo)
+
+    conn, err := sql.Open(config.DBDriver, config.DBSource)
     if err != nil {
         log.Fatal(err)
     }
@@ -37,7 +42,7 @@ func main() {
 
 	store := db.NewStore(conn)
 	server := api.NewServer(store)
-	err = server.StartServer(address)
+	err = server.StartServer(config.ServerAddress)
 	if err != nil {
 		log.Fatal(err)
 	}

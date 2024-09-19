@@ -16,7 +16,6 @@ type createAccountRequest struct {
 	Currency string `json:"currency" binding:"required,oneof=USD CAD EUR"`
 }
 
-
 func (server *Server) createAccount(ctx *gin.Context) {
 	var request createAccountRequest
 	if err := ctx.ShouldBind(&request); err != nil {
@@ -44,7 +43,7 @@ type getAccountRequest struct {
 
 func (server *Server) getAccount(ctx *gin.Context) {
 	var request getAccountRequest
-	if err := ctx.ShouldBindUri(&request); err != nil {
+	if err := ctx.ShouldBindUri(&request); err != nil {		// Parse request parameters
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
@@ -52,13 +51,13 @@ func (server *Server) getAccount(ctx *gin.Context) {
 	fmt.Print(account)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			ctx.JSON(http.StatusNotFound, errorResponse(err))
+			ctx.JSON(http.StatusNotFound, errorResponse(err))	// send response back
 			return
 		}
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))	// send response back
 		return
 	}
-	ctx.JSON(http.StatusOK, account)
+	ctx.JSON(http.StatusOK, account)	// send response back
 }
 
 

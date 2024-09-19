@@ -6,27 +6,21 @@ import (
 	"log"
 	"os"
 	"testing"
-
 	_ "github.com/lib/pq"
+	"github.com/longln/simplebank/utils"
 )
 
-const (
-    host     = "localhost"
-    port     = 5432
-    user     = "root"
-    password = "secret"
-    dbname   = "simple_bank"
-)
+
 
 var testDB *sql.DB
 var testQueries *Queries
 
 func TestMain(m *testing.M) {
-    psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-        host, port, user, password, dbname)
-
-    var err error
-    testDB, err = sql.Open("postgres", psqlInfo)
+    config, err := utils.LoadConfig("../..")
+    if err != nil {
+        log.Fatal("cannot read config:", err)
+    }
+    testDB, err = sql.Open(config.DBDriver, config.DBSource)
     if err != nil {
         log.Fatal(err)
     }
