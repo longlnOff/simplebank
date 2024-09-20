@@ -11,14 +11,6 @@ import (
 	"github.com/longln/simplebank/utils"
 )
 
-const (
-    host     = "localhost"
-    port     = 5432
-    user     = "root"
-    password = "secret"
-    dbname   = "simple_bank"
-	address	 = "0.0.0.0:8080"
-)
 
 func main() {
     config, err := utils.LoadConfig(".")

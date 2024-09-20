@@ -8,12 +8,12 @@ import (
 
 // type server for handling database and routing
 type Server struct {
-	store *db.Store
+	store db.Store
 	router *gin.Engine
 }
 
 // create new server for handling
-func NewServer(store *db.Store) *Server {
+func NewServer(store db.Store) *Server {
 	server := &Server{store: store}		// To interact with DB
 	router := gin.Default()				// To route requests
 
