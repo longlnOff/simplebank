@@ -1,8 +1,10 @@
 package token
 
 import (
+	"errors"
 	"fmt"
 	"time"
+
 	"github.com/golang-jwt/jwt"
 )
 
@@ -33,16 +35,26 @@ func (maker *JWTMaker) CreateToken(username string, duration time.Duration) (str
 	return jwtToken.SignedString([]byte(maker.secretKey))
 }
 
-func (maker *JWTMaker) VerfyToken(token string) (*Payload, error) {
+func (maker *JWTMaker) VerifyToken(token string) (*Payload, error) {
 	keyFunc := func (token *jwt.Token) (interface{}, error) {
-		_, ok := token.Method.(*jwt.SigningMethodHMAC)
+		_, ok := token.Method.(*jwt.SigningMethodHMAC)		// check header
 		if !ok {
 			return nil, ErrInvalidToken
-		}
+		} 
 		return []byte(maker.secretKey), nil
 	}
 	jwtToken, err := jwt.ParseWithClaims(token, &Payload{}, keyFunc)
 	if err != nil {
 		verr, ok := err.(*jwt.ValidationError)
-		if ok 
+		if ok && errors.Is(verr.Inner, ErrExpiredToken) {
+			return nil, ErrExpiredToken
+		}
+		return nil, ErrInvalidToken
+	}
+
+	payload, ok := jwtToken.Claims.(*Payload)
+	if !ok {
+		return nil, ErrInvalidToken
+	}
+	return payload, nil
 }
