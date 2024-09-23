@@ -33,7 +33,10 @@ func main() {
     fmt.Println("Successfully connected to Database!")
 
 	store := db.NewStore(conn)
-	server := api.NewServer(store)
+	server, err := api.NewServer(config, store)
+    if err != nil {
+		log.Fatal(err)
+	}
 	err = server.StartServer(config.ServerAddress)
 	if err != nil {
 		log.Fatal(err)
