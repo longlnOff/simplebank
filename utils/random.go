@@ -1,15 +1,21 @@
 package utils
 
-import "golang.org/x/exp/rand"
+import (
+	"fmt"
+	"time"
+
+	"golang.org/x/exp/rand"
+)
 
 const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 
 func RandomInt(min int, max int) int {
+	rand.Seed(uint64(time.Now().UnixNano()))
 	return min + rand.Intn(max-min)
 }
 
-func randomString(length int) string {
+func RandomString(length int) string {
 	bytes := make([]byte, length)
 	for i := 0; i < length; i++ {
 		bytes[i] = letters[RandomInt(0, len(letters)-1)]
@@ -18,7 +24,7 @@ func randomString(length int) string {
 }
 
 func RandomOwner() string {
-	return randomString(6)
+	return RandomString(10)
 }
 
 func RandomMoney() int64 {
@@ -26,7 +32,12 @@ func RandomMoney() int64 {
 }
 
 func RandomCurrency() string {
-	currencies := []string{"EUR", "USD", "CAD"}
+	currencies := []string{EUR, USD, CAD}
 	n := len(currencies)
 	return currencies[RandomInt(0, n-1)]
+}
+
+
+func RandomEmail() string {
+	return fmt.Sprintf("%s@gmail.com", RandomString(10))
 }

@@ -25,10 +25,18 @@ sqlc_generate:
 test:
 	go test -timeout 30s -cover ./... -v
 
-run:
+server:
 	go run main.go
 
 mockgen:
 	mockgen -package mockdb -destination db/mock/store.go github.com/longln/simplebank/db/sqlc Store
 
-.PHONY: mockgen run test sqlc_generate run_docker start_docker stop_docker create_db drop_db up_migrate down_migrate
+1up_migrate:
+	migrate -database postgres://root:secret@localhost:5432/simple_bank?sslmode=disable -path db/migrations -verbose up 1
+
+1down_migrate:
+	migrate -database postgres://root:secret@localhost:5432/simple_bank?sslmode=disable -path db/migrations -verbose down 1
+
+
+
+.PHONY: 1up_migrate 1down_migrate mockgen server test sqlc_generate run_docker start_docker stop_docker create_db drop_db up_migrate down_migrate

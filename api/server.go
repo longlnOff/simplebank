@@ -2,9 +2,10 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+	"github.com/go-playground/validator/v10"
 	db "github.com/longln/simplebank/db/sqlc"
 )
-
 
 // type server for handling database and routing
 type Server struct {
@@ -17,12 +18,18 @@ func NewServer(store db.Store) *Server {
 	server := &Server{store: store}		// To interact with DB
 	router := gin.Default()				// To route requests
 
+	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		v.RegisterValidation("currency", validCurrency)
+	}
 	// register routes
 
 	// we need bind to Server struct because we need to interact with DB to create account and of course, routing
 	router.POST("/accounts", server.createAccount)	// create account
 	router.GET("/accounts/:id", server.getAccount)	// get account
-	router.GET("/accounts", server.listAccount)	// get account
+	router.GET("/accounts", server.listAccount)	// list accounts
+	router.POST("/transfers", server.createTransfer)	// create transfer
+	router.POST("/users", server.createUser)	// create user
+
 
 	server.router = router
 	return server
