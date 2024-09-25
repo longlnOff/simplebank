@@ -16,7 +16,8 @@ import (
 	"github.com/longln/simplebank/token"
 	"github.com/longln/simplebank/utils"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/mock/gomock"
+	"github.com/golang/mock/gomock"
+
 )
 
 // func TestGetAccount(t *testing.T) {
