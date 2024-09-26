@@ -40,4 +40,11 @@ mockgen:
 fix_gomock:
 	export PATH=$PATH:$(go env GOPATH)/bin
 
-.PHONY: fix_gomock 1up_migrate 1down_migrate mockgen server test sqlc_generate run_docker start_docker stop_docker create_db drop_db up_migrate down_migrate
+proto:
+	rm -f pb/*.go
+	protoc --proto_path=proto --go_out=pb --go_opt=paths=source_relative --go-grpc_out=pb --go-grpc_opt=paths=source_relative proto/*.proto
+
+evans:
+	evans --host 0.0.0.0 --port 9090 -r repl
+
+.PHONY: evans proto fix_gomock 1up_migrate 1down_migrate mockgen server test sqlc_generate run_docker start_docker stop_docker create_db drop_db up_migrate down_migrate
