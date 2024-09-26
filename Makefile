@@ -37,6 +37,7 @@ mockgen:
 1down_migrate:
 	migrate -database postgres://root:secret@localhost:5432/simple_bank?sslmode=disable -path db/migrations -verbose down 1
 
+fix_gomock:
+	export PATH=$PATH:$(go env GOPATH)/bin
 
-
-.PHONY: 1up_migrate 1down_migrate mockgen server test sqlc_generate run_docker start_docker stop_docker create_db drop_db up_migrate down_migrate
+.PHONY: fix_gomock 1up_migrate 1down_migrate mockgen server test sqlc_generate run_docker start_docker stop_docker create_db drop_db up_migrate down_migrate

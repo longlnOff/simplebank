@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/lib/pq"
 	db "github.com/longln/simplebank/db/sqlc"
 	"github.com/longln/simplebank/utils"
@@ -79,13 +80,13 @@ func newUserResponse(user db.User) userResponse {
 }
 
 // user login
-
 type loginUserRequest struct {
 	UserName string `json:"user_name" binding:"required,alphanum"`
 	Password string `json:"password" binding:"required,min=6"`
 }
 
 type loginUserResponse struct {
+	SessionID uuid.UUID `json:"session_id"`
 	AccessToken string `json:"access_token"`
 	AccessTokenExpiresAt time.Time `json:"access_token_expires_at"`
 	RefreshToken string `json:"refresh_token"`
@@ -125,7 +126,7 @@ func (server *Server) loginUser(ctx *gin.Context) {
 		return
 	}
 	// create session
-	session, _err := server.store.CreateSession(ctx, db.CreateSessionParams{
+	session, err := server.store.CreateSession(ctx, db.CreateSessionParams{
 		ID:           refreshPayload.ID,
 		UserName:     user.UserName,
 		RefreshToken: refreshToken,
@@ -142,7 +143,11 @@ func (server *Server) loginUser(ctx *gin.Context) {
 
 
 	rsp := loginUserResponse{
+		SessionID: session.ID,
 		AccessToken: accessToken,
+		AccessTokenExpiresAt: accessPayload.ExpiredAt,
+		RefreshToken: refreshToken,
+		RefreshTokenExpiresAt: refreshPayload.ExpiredAt,
 		UserName: newUserResponse(user),
 	}
 	ctx.JSON(http.StatusOK, rsp)

@@ -46,6 +46,7 @@ func (server *Server) setupRouter() {
 	// we need bind to Server struct because we need to interact with DB to create account and of course, routing
 	router.POST("/users", server.createUser)	// create user
 	router.POST("/users/login", server.loginUser) // login
+	router.POST("/tokens/renew_access", server.renewAccessToken) // login
 	
 	// protected by middleware
 	authRoutes := router.Group("/").Use(authMiddleware(server.tokenMaker))
