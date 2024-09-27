@@ -49,13 +49,13 @@ func main() {
 }
 
 func RunGRPCServer(config utils.Config, store db.Store) {
-	grpcServer := grpc.NewServer()
 
 	server, err := gapi.NewServer(config, store)
 	if err != nil {
 		log.Fatal("cannot create server:", err)
 	}
 
+	grpcServer := grpc.NewServer()
 	pb.RegisterSimpleBankServer(grpcServer, server)
 	reflection.Register(grpcServer)
 

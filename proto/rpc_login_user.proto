@@ -9,7 +9,7 @@ import "google/protobuf/timestamp.proto";
 
 message LoginUserRequest {
     string userName = 1;
-    string fullName = 2;
+    string password = 2;
 }
 
 message LoginUserResponse {

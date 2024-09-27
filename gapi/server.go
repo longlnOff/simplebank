@@ -11,10 +11,10 @@ import (
 
 // type server for handling database and routing
 type Server struct {
-	pb.UnimplementedSimpleBankServer
 	config utils.Config
 	store db.Store
 	tokenMaker token.Maker
+	pb.UnimplementedSimpleBankServer
 }
 
 // create new server for handling

@@ -5,7 +5,6 @@ go 1.23.1
 require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/golang/mock v1.6.0
-	github.com/golang/protobuf v1.5.4
 	github.com/lib/pq v1.10.9
 	github.com/stretchr/testify v1.9.0
 	golang.org/x/exp v0.0.0-20240909161429-701f63a606c0

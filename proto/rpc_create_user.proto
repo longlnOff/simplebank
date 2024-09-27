@@ -15,5 +15,4 @@ message CreateUserRequest {
 
 message CreateUserResponse {
     User user = 1;
-    string password = 2;
 }
