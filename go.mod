@@ -11,7 +11,7 @@ require (
 	github.com/stretchr/testify v1.9.0
 	golang.org/x/exp v0.0.0-20240909161429-701f63a606c0
 	google.golang.org/genproto/googleapis/api v0.0.0-20240814211410-ddb44dafa142
-	google.golang.org/grpc v1.65.0
+	google.golang.org/grpc v1.67.0
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.5.1
 )
 
