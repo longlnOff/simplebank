@@ -8,12 +8,14 @@ import (
 	"os"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/hibiken/asynq"
 	_ "github.com/lib/pq"
 	"github.com/longln/simplebank/api"
 	db "github.com/longln/simplebank/db/sqlc"
 	"github.com/longln/simplebank/gapi"
 	"github.com/longln/simplebank/pb"
 	"github.com/longln/simplebank/utils"
+	"github.com/longln/simplebank/worker"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
@@ -44,21 +46,38 @@ func main() {
 
 	store := db.NewStore(conn)
 
+	// redis connection
+	redisOpt := asynq.RedisClientOpt{
+		Addr: config.RedisAddress,
+	}
+
+	taskDistributor := worker.NewRedisTaskDistributor(redisOpt)
+
 
 	// // run HTTP Gin server
 	// RunGinServer(config, store)
 
 	// Use 2 goroutines to run both server
 	// run GRPC server
-	go RunGRPCServer(config, store)
-	RunGatewayServer(config, store)
+	go runTaskProcessor(redisOpt, store)
+	go RunGRPCServer(config, store, taskDistributor)
+	RunGatewayServer(config, store, taskDistributor)
 
 }
 
 
-func RunGatewayServer(config utils.Config, store db.Store) {
+func runTaskProcessor(redisOpt asynq.RedisClientOpt, store db.Store) {
+	taskProcessor := worker.NewRedisTaskProcessor(redisOpt, store)
+	log.Info().Msg("start task processor")
+	err := taskProcessor.Start()
+	if err != nil {
+		log.Fatal().Msg("failed to start task processor")
+	}
+}
 
-	server, err := gapi.NewServer(config, store)
+func RunGatewayServer(config utils.Config, store db.Store, taskDistributor worker.TaskDistributor) {
+
+	server, err := gapi.NewServer(config, store, taskDistributor)
 	if err != nil {
 		log.Fatal().Msg("cannot create server:")
 	}
@@ -97,9 +116,9 @@ func RunGatewayServer(config utils.Config, store db.Store) {
 
 }
 
-func RunGRPCServer(config utils.Config, store db.Store) {
+func RunGRPCServer(config utils.Config, store db.Store, taskDistributor worker.TaskDistributor) {
 
-	server, err := gapi.NewServer(config, store)
+	server, err := gapi.NewServer(config, store, taskDistributor)
 	if err != nil {
 		log.Fatal().Msg("cannot create server")
 	}

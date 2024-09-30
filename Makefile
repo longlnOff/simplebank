@@ -47,4 +47,7 @@ proto:
 evans:
 	evans --host localhost --port 9090 -r repl
 
-.PHONY: evans proto fix_gomock 1up_migrate 1down_migrate mockgen server test sqlc_generate run_docker start_docker stop_docker create_db drop_db up_migrate down_migrate
+redis:
+	docker run -d --name redis -p 6379:6379 -d redis:7-alpine
+
+.PHONY: redis evans proto fix_gomock 1up_migrate 1down_migrate mockgen server test sqlc_generate run_docker start_docker stop_docker create_db drop_db up_migrate down_migrate
